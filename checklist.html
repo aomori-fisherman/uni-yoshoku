@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>養殖キャンプ 持ち物・資材リスト</title>
+  <style>
+    :root {
+      --bg: #f5f5f5;
+      --card: #ffffff;
+      --text: #1a1a1a;
+      --sub: #555555;
+      --accent: #0066cc;
+      --accent-bg: #f0f4fa;
+      --accent-border: #ccd6e8;
+      --green: #00aa44;
+      --green-bg: #f0fff4;
+      --green-border: #00aa44;
+      --divider: #dddddd;
+      --warning-bg: #fff8e1;
+      --warning-border: #f59e0b;
+      --warning-text: #92400e;
+      --checked-text: #999999;
+      --header-bg: #0066cc;
+      --header-text: #ffffff;
+      --badge-bought: #00aa44;
+      --badge-have: #888888;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #1a1a1a;
+        --card: #2a2a2a;
+        --text: #e8e8e8;
+        --sub: #aaaaaa;
+        --accent: #4499ff;
+        --accent-bg: #1e2a3a;
+        --accent-border: #334466;
+        --green: #33aa66;
+        --green-bg: #1a3a22;
+        --green-border: #33aa66;
+        --divider: #444444;
+        --warning-bg: #2a2010;
+        --warning-border: #f59e0b;
+        --warning-text: #fcd34d;
+        --checked-text: #666666;
+        --header-bg: #1a3a6e;
+        --header-text: #e8e8e8;
+        --badge-bought: #33aa66;
+        --badge-have: #666666;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Yu Gothic', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 16px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    header {
+      background: var(--header-bg);
+      color: var(--header-text);
+      padding: 20px 16px 16px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    header h1 {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    header p {
+      font-size: 13px;
+      margin-top: 4px;
+      opacity: 0.85;
+    }
+
+    .progress-bar-wrap {
+      margin-top: 10px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 999px;
+      height: 6px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: #66ffaa;
+      border-radius: 999px;
+      transition: width 0.3s ease;
+    }
+
+    .progress-label {
+      margin-top: 4px;
+      font-size: 12px;
+      opacity: 0.8;
+    }
+
+    main {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    .section {
+      margin-bottom: 20px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      padding: 14px 16px;
+      background: var(--card);
+      border-radius: 12px;
+      border: 1px solid var(--divider);
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .section-header:active {
+      opacity: 0.8;
+    }
+
+    .section-icon {
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+
+    .section-title {
+      flex: 1;
+    }
+
+    .section-title h2 {
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .section-title .section-meta {
+      font-size: 12px;
+      color: var(--sub);
+      margin-top: 2px;
+    }
+
+    .section-toggle {
+      font-size: 18px;
+      color: var(--sub);
+      transition: transform 0.25s ease;
+      flex-shrink: 0;
+    }
+
+    .section-toggle.open {
+      transform: rotate(180deg);
+    }
+
+    .section-body {
+      display: none;
+      padding: 0 4px;
+    }
+
+    .section-body.open {
+      display: block;
+    }
+
+    .category-header {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--sub);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 14px 12px 6px;
+    }
+
+    .checklist {
+      background: var(--card);
+      border-radius: 10px;
+      border: 1px solid var(--divider);
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+
+    .check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--divider);
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: background 0.15s;
+    }
+
+    .check-item:last-child {
+      border-bottom: none;
+    }
+
+    .check-item:active {
+      background: var(--accent-bg);
+    }
+
+    .check-box {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      border: 2px solid var(--divider);
+      background: transparent;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1px;
+      transition: all 0.15s;
+    }
+
+    .check-item.checked .check-box {
+      background: var(--green);
+      border-color: var(--green);
+    }
+
+    .check-item.checked .check-box::after {
+      content: '';
+      display: block;
+      width: 6px;
+      height: 10px;
+      border: 2px solid white;
+      border-top: none;
+      border-left: none;
+      transform: rotate(45deg) translate(-1px, -1px);
+    }
+
+    .check-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .check-name {
+      font-size: 15px;
+      font-weight: 500;
+      transition: color 0.15s;
+    }
+
+    .check-item.checked .check-name {
+      color: var(--checked-text);
+      text-decoration: line-through;
+    }
+
+    .check-detail {
+      font-size: 13px;
+      color: var(--sub);
+      margin-top: 2px;
+    }
+
+    .check-item.checked .check-detail {
+      color: var(--checked-text);
+    }
+
+    .check-right {
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .price {
+      font-size: 13px;
+      color: var(--sub);
+      white-space: nowrap;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 999px;
+      margin-top: 4px;
+    }
+
+    .badge-buy {
+      background: var(--accent-bg);
+      color: var(--accent);
+      border: 1px solid var(--accent-border);
+    }
+
+    .badge-have {
+      background: var(--bg);
+      color: var(--badge-have);
+      border: 1px solid var(--divider);
+    }
+
+    .warning-box {
+      background: var(--warning-bg);
+      border: 1px solid var(--warning-border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 13px;
+      color: var(--warning-text);
+      margin-bottom: 10px;
+      line-height: 1.6;
+    }
+
+    .warning-box strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 14px;
+    }
+
+    .total-card {
+      background: var(--green-bg);
+      border: 1px solid var(--green-border);
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-top: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .total-label {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--green);
+    }
+
+    .total-amount {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--green);
+    }
+
+    .reset-btn {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      background: none;
+      border: 1px solid var(--divider);
+      border-radius: 10px;
+      color: var(--sub);
+      font-size: 14px;
+      cursor: pointer;
+      margin-top: 24px;
+      margin-bottom: 32px;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .reset-btn:active {
+      background: var(--accent-bg);
+    }
+
+    .note-text {
+      font-size: 12px;
+      color: var(--sub);
+      padding: 8px 12px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>養殖キャンプ 持ち物・資材リスト</h1>
+  <p>2026年4月14日(火)〜16日(木) ／ モリピア前 小屋</p>
+  <div class="progress-bar-wrap">
+    <div class="progress-bar" id="progressBar" style="width:0%"></div>
+  </div>
+  <div class="progress-label" id="progressLabel">0 / 0 完了</div>
+</header>
+
+<main>
+
+  <!-- A. 道具セクション -->
+  <div class="section">
+    <div class="section-header" onclick="toggleSection('tools')">
+      <span class="section-icon">🔧</span>
+      <div class="section-title">
+        <h2>A. 必要道具</h2>
+        <div class="section-meta">工具・現場で用意するもの</div>
+      </div>
+      <span class="section-toggle open" id="toggle-tools">▼</span>
+    </div>
+    <div class="section-body open" id="body-tools">
+
+      <div class="category-header">切断・加工</div>
+      <div class="checklist">
+        <div class="check-item" onclick="toggle(this)" data-id="tool-stepdrill">
+          <div class="check-box"></div>
+          <div class="check-content">
+            <div class="check-name">ステップドリル（4〜32mm）</div>
+            <div class="check-detail">NVボックス穴あけ用 ／ 倉庫・ハートスポット・浜小屋のどこかにある</div>
+          </div>
+          <div class="check-right">
+            <span class="badge badge-have">手持ち確認</span>
+          </div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-id="tool-nokogiri">
+          <div class="check-box"></div>
+          <div class="check-content">
+            <div class="check-name">ノコギリ</div>
+            <div class="check-detail">木材カット用（2×4材の切り出し）</div>
+          </div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-id="tool-cutter">
+          <div class="check-box"></div>
+          <div class="check-content">
+            <div class="check-name">カッターナイフ（大）</div>
+            <div class="check-detail">スタイロフォームのカット用</div>
+          </div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-id="tool-sandpaper">
+          <div class="check-box"></div>
+          <div class="check-content">
+            <div class="check-name">紙やすり</div>
+            <div class="check-detail">穴あけ後のバリ取り用</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="category-header">固定・組み立て</div>
+      <div class="checklist">
+        <div class="check-item" onclick="toggle(this)" data-id="tool-drill">
+          <div class="check-box"></div>
+          <div class="check-content">
+            <div class="check-name">電動ドリル / インパクトドライバー</div>
+            <div class="check-detail">フレーム組み立て・ビス止め用</div>
+          </div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-id="tool-driver">
+          <div class="check-box"></div>
+          <div class="check-content">
+            <div class="check-name">ドライバー（プラス）</div>
+            <div class="check-detail">手締め確認用</div>
+          </div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-id="tool-pliers">
+          <div class="check-box"></div>
+          <div class="check-content">
+            <div class="check-name">ペンチ</div>
+            <div class="check-detail">結束バンド締め・配管固定</div>
+          </div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-id="tool-clamp">
+          <div class="check-box"></div>
+          <div class="check-content">
+            <div class="check-name">クランプ</div>
+            <div class="check-detail">木材固定用（あれば）</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="category-header">計測・確認</div>
+      <div class="checklist">
+        <div class="check-item" onclick="toggle(this)" data-id="tool-level">
+          <div class="check-box"></div>
+          <div class="check-content">
+            <div class="check-name">水平器</div>
+            <div class="check-detail">フレームの水平・垂直確認必須（沖山指示）</div>
+          </div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-id="tool-measure">
+          <div class="check-box"></div>
+          <div class="check-content">
+            <div class="check-name">メジャー / 定規</div>
+            <div class="check-detail">寸法確認・棚板高さ計測</div>
+          </div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-id="tool-marker">
+          <div class="check-box"></div>
+          <div class="check-content">
+            <div class="check-name">マーカーペン</div>
+            <div class="check-detail">穴あけ位置のマーキング用</div>
+          </div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-id="tool-bucket">
+          <div class="check-box"></div>
+          <div class="check-content">
+            <div class="check-name">バケツ（10L）</div>
+            <div class="check-detail">通水テスト時の流量計測用（1分間計測）／ 資材リストにも記載</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="category-header">清掃・その他</div>
+      <div class="checklist">
+        <div class="check-item" onclick="toggle(this)" data-id="tool-rag">
+          <div class="check-box"></div>
+          <div class="check-content">
+            <div class="check-name">雑巾 / ウエス</div>
+            <div class="check-detail">接着剤拭き取り・水漏れ対応</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- B. 資材セクション -->
+  <div class="section">
+    <div class="section-header" onclick="toggleSection('parts')">
+      <span class="section-icon">📦</span>
+      <div class="section-title">
+        <h2>B. 必要資材</h2>
+        <div class="section-meta">購入リスト（ホームセンター）</div>
+      </div>
+      <span class="section-toggle open" id="toggle-parts">▼</span>
+    </div>
+    <div class="section-body open" id="body-parts">
+
+      <div class="warning-box">
+        <strong>注意: タンクコネクター</strong>
+        ホームセンターで入手困難な場合あり。4/8までにAmazon注文推奨（キャンプ前日 4/13 までに必着）。
+      </div>
+
+      <div class="category-header">配管・継手</div>
+      <div class="checklist">
+        <div class="check-item" onclick="toggle(this)" data-id="p-vp13-4m">
+          <div class="check-box"></div>
+          <div class="check-content">
+            <div class="check-name">塩ビ管 VP13（4m）</div>
+            <div class="check-detail">給水ヘッダー・分岐配管用</div>
+          </div>
+          <div class="check-right">
+            <div class="price">700円 × 1本</div>
+            <span class="badge badge-buy">購入</span>
+          </div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-id="p-vp16-4m">
+          <div class="check-box"></div>
+          <div class="check-content">
+            <div class="check-name">塩ビ管 VP16（4m）</div>
+            <div class="check-detail">オーバーフロー排水配管用</div>
+          </div>
+          <div class="check-right">
+            <div class="price">900円 × 2本</div>
+            <span class="badge badge-buy">購入</span>
+          </div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-id="p-vp25-2m">
+          <div class="check-box"></div>
+          <div class="check-content">
+            <div class="check-name">塩ビ管 VP25（2m）</div>
+            <div class="check-detail">側面排出配管用</div>
+          </div>
+          <div class="check-right">
+            <div class="price">800円 × 1本</div>
+            <span class="badge badge-buy">購入</span>
+          </div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-id="p-elbow-vp13">
+          <div class="check-box"></div>
+          <div class="check-content">
+            <div class="check-name">エルボ 90° VP13</div>
+            <div class="check-detail"></div>
+          </div>
+          <div class="check-right">
+            <div class="price">50円 × 10個</div>
+            <span class="badge badge-buy">購入</span>
+          </div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-id="p-elbow-vp16">
+          <div class="check-box"></div>
+          <div class="check-content">
+            <div class="check-name">エルボ 90° VP16</div>
+            <div class="check-detail"></div>
+          </div>
+          <div class="check-right">
+            <div class="price">60円 × 6個</div>
+            <span class="badge badge-buy">購入</span>
+          </div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-id="p-tee-vp13">
+          <div class="check-box"></div>
+          <div class="check-content">
+            <div class="check-name">チーズ（T継手）VP13</div>
+            <div class="check-detail">3分岐ヘッダー作成用</div>
+          </div>
+          <div class="check-right">
+            <div class="price">80円 × 4個</div>
+            <span class="badge badge-buy">購入</span>
+          </div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-id="p-socket-vp13">
+          <div class="check-box"></div>
+          <div class="check-content">
+            <div class="check-name">ソケット VP13</div>
+            <div class="check-detail"></div>
+          </div>
+          <div class="check-right">
+            <div class="price">50円 × 6個</div>
+            <span class="badge badge-buy">購入</span>
+          </div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-id="p-socket-vp16">
+          <div class="check-box"></div>
+          <div class="check-content">
+            <div class="check-name">ソケット VP16</div>
+            <div class="check-detail"></div>
+          </div>
+          <div class="check-right">
+            <div class="price">60円 × 6個</div>
+            <span class="badge badge-buy">購入</span>
+          </div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-id="p-valve-13">
+          <div class="check-box"></div>
+          <div class="check-content">
+            <div class="check-name">ボールバルブ 13mm</div>
+            <div class="check-detail">給水分岐用 V1/V2/V3</div>
+          </div>
+          <div class="check-right">
+            <div class="price">500円 × 3個</div>
+            <span class="badge badge-buy">購入</span>
+          </div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-id="p-valve-25">
+          <div class="check-box"></div>
+          <div class="check-content">
+            <div class="check-name">ボールバルブ 25mm</div>
+            <div class="check-detail">側面排出バルブ（VP25拡大 沖山指示）</div>
+          </div>
+          <div class="check-right">
+            <div class="price">800円 × 3個</div>
+            <span class="badge badge-buy">購入</span>
+          </div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-id="p-tankcon-vp16">
+          <div class="check-box"></div>
+          <div class="check-content">
+            <div class="check-name">タンクコネクター VP16用</div>
+            <div class="check-detail">オーバーフロー排水口 ／ Amazon注文推奨</div>
+          </div>
+          <div class="check-right">
+            <div class="price">300円 × 3個</div>
+            <span class="badge badge-buy">要注文</span>
+          </div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-id="p-tankcon-vp25">
+          <div class="check-box"></div>
+          <div class="check-content">
+            <div class="check-name">タンクコネクター VP25用</div>
+            <div class="check-detail">側面排出口 ／ Amazon注文推奨</div>
+          </div>
+          <div class="check-right">
+            <div class="price">350円 × 3個</div>
+            <span class="badge badge-buy">要注文</span>
+          </div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-id="p-glue">
+          <div class="check-box"></div>
+          <div class="check-content">
+            <div class="check-name">塩ビ用接着剤</div>
+            <div class="check-detail">差し込み後15秒保持・硬化24時間</div>
+          </div>
+          <div class="check-right">
+            <div class="price">500円 × 1本</div>
+            <span class="badge badge-buy">購入</span>
+          </div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-id="p-sealtape">
+          <div class="check-box"></div>
+          <div class="check-content">
+            <div class="check-name">シールテープ</div>
+            <div class="check-detail">ネジ接続部の止水</div>
+          </div>
+          <div class="check-right">
+            <div class="price">150円 × 1巻</div>
+            <span class="badge badge-buy">購入</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="category-header">濾過槽用</div>
+      <div class="checklist">
+        <div class="check-item" onclick="toggle(this)" data-id="p-acrylic">
+          <div class="check-box"></div>
+          <div class="check-content">
+            <div class="check-name">アクリル板または塩ビ板（仕切り用）</div>
+            <div class="check-detail">3mm厚 / 270×150mm ／ 前日シリコン接着・24h乾燥必須</div>
+          </div>
+          <div class="check-right">
+            <div class="price">800円 × 1枚</div>
+            <span class="badge badge-buy">購入</span>
+          </div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-id="p-silicon">
+          <div class="check-box"></div>
+          <div class="check-content">
+            <div class="check-name">水槽用シリコン接着剤</div>
+            <div class="check-detail">仕切り板の底面・両側面を完全固定</div>
+          </div>
+          <div class="check-right">
+            <div class="price">600円 × 1本</div>
+            <span class="badge badge-buy">購入</span>
+          </div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-id="p-coral">
+          <div class="check-box"></div>
+          <div class="check-content">
+            <div class="check-name">サンゴ砂（中目）</div>
+            <div class="check-detail">生物濾過用 2〜3kg ／ 洗浄後使用</div>
+          </div>
+          <div class="check-right">
+            <div class="price">500円 × 3kg</div>
+            <span class="badge badge-buy">購入</span>
+          </div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-id="p-laundry-net">
+          <div class="check-box"></div>
+          <div class="check-content">
+            <div class="check-name">洗濯ネット（細目）</div>
+            <div class="check-detail">サンゴ砂を入れるネット袋 2〜3枚</div>
+          </div>
+          <div class="check-right">
+            <div class="price">100円 × 3枚</div>
+            <span class="badge badge-buy">購入</span>
+          </div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-id="p-mesh-zaru">
+          <div class="check-box"></div>
+          <div class="check-content">
+            <div class="check-name">プラスチック製メッシュざる（沈殿槽受水口用）</div>
+            <div class="check-detail">100均 ／ 排水の水流緩和・沈殿物舞い上がり防止</div>
+          </div>
+          <div class="check-right">
+            <div class="price">100円 × 1個</div>
+            <span class="badge badge-buy">100均</span>
+          </div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-id="p-zaru">
+          <div class="check-box"></div>
+          <div class="check-content">
+            <div class="check-name">プラスチック製ざる（サンゴ砂底上げ用）</div>
+            <div class="check-detail">100均 ／ 止水層発生防止・底面から浮かせる</div>
+          </div>
+          <div class="check-right">
+            <div class="price">100円 × 1個</div>
+            <span class="badge badge-buy">100均</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="category-header">断熱</div>
+      <div class="checklist">
+        <div class="check-item" onclick="toggle(this)" data-id="p-styrofoam">
+          <div class="check-box"></div>
+          <div class="check-content">
+            <div class="check-name">スタイロフォーム 30mm厚</div>
+            <div class="check-detail">900×1800mm ／ 全槽の側面・底面を断熱（水温安定化）</div>
+          </div>
+          <div class="check-right">
+            <div class="price">1,000円 × 2枚</div>
+            <span class="badge badge-buy">購入</span>
+          </div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-id="p-alumi-tape">
+          <div class="check-box"></div>
+          <div class="check-content">
+            <div class="check-name">アルミテープ</div>
+            <div class="check-detail">断熱材の固定用</div>
+          </div>
+          <div class="check-right">
+            <div class="price">400円 × 1巻</div>
+            <span class="badge badge-buy">購入</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="category-header">フレーム（木材不足分）</div>
+      <div class="checklist">
+        <div class="check-item" onclick="toggle(this)" data-id="p-2x4">
+          <div class="check-box"></div>
+          <div class="check-content">
+            <div class="check-name">2×4材（1820mm）</div>
+            <div class="check-detail">倉庫在庫確認 → 不足分のみHCで購入</div>
+          </div>
+          <div class="check-right">
+            <div class="price">350円/本 × 要確認</div>
+            <span class="badge badge-have">在庫確認</span>
+          </div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-id="p-screw">
+          <div class="check-box"></div>
+          <div class="check-content">
+            <div class="check-name">コーススレッド（木ねじ）65mm</div>
+            <div class="check-detail">棚板・柱ビス止め用 100本入り</div>
+          </div>
+          <div class="check-right">
+            <div class="price">400円 × 1箱</div>
+            <span class="badge badge-buy">購入</span>
+          </div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-id="p-l-bracket">
+          <div class="check-box"></div>
+          <div class="check-content">
+            <div class="check-name">L字金具（補強用）</div>
+            <div class="check-detail">棚板固定・ガタつき防止</div>
+          </div>
+          <div class="check-right">
+            <div class="price">100円 × 8個</div>
+            <span class="badge badge-buy">購入</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="category-header">内部飼育籠用</div>
+      <div class="checklist">
+        <div class="check-item" onclick="toggle(this)" data-id="p-net">
+          <div class="check-box"></div>
+          <div class="check-content">
+            <div class="check-name">トリカルネット（10mm目）</div>
+            <div class="check-detail">NVボックス内寸に合わせてカット ／ 飼育槽3台分</div>
+          </div>
+          <div class="check-right">
+            <div class="price">500円 × 3枚分</div>
+            <span class="badge badge-buy">購入</span>
+          </div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-id="p-cable-tie">
+          <div class="check-box"></div>
+          <div class="check-content">
+            <div class="check-name">結束バンド（ネット固定用）</div>
+            <div class="check-detail"></div>
+          </div>
+          <div class="check-right">
+            <div class="price">200円 × 1袋</div>
+            <span class="badge badge-buy">購入</span>
+          </div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-id="p-vp13-cage">
+          <div class="check-box"></div>
+          <div class="check-content">
+            <div class="check-name">塩ビパイプ VP13（籠フレーム用）</div>
+            <div class="check-detail">沖山確認中 ／ トリカルネット単体で十分なら省略</div>
+          </div>
+          <div class="check-right">
+            <span class="badge badge-have">沖山確認待ち</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="category-header">その他</div>
+      <div class="checklist">
+        <div class="check-item" onclick="toggle(this)" data-id="p-bucket-buy">
+          <div class="check-box"></div>
+          <div class="check-content">
+            <div class="check-name">バケツ（10L）</div>
+            <div class="check-detail">流量計測用 ／ 道具として持参でも可</div>
+          </div>
+          <div class="check-right">
+            <div class="price">300円 × 1個</div>
+            <span class="badge badge-buy">購入</span>
+          </div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-id="p-timer">
+          <div class="check-box"></div>
+          <div class="check-content">
+            <div class="check-name">タイマー（ポンプ運転管理用）</div>
+            <div class="check-detail">電源タイマー</div>
+          </div>
+          <div class="check-right">
+            <div class="price">1,500円 × 1個</div>
+            <span class="badge badge-buy">購入</span>
+          </div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-id="p-hose-clamp">
+          <div class="check-box"></div>
+          <div class="check-content">
+            <div class="check-name">ホースクランプ（各種）</div>
+            <div class="check-detail"></div>
+          </div>
+          <div class="check-right">
+            <div class="price">50円 × 10個</div>
+            <span class="badge badge-buy">購入</span>
+          </div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-id="p-hose">
+          <div class="check-box"></div>
+          <div class="check-content">
+            <div class="check-name">耐圧ホース（内径13mm）</div>
+            <div class="check-detail">ポンプ〜ヘッダー接続用 1〜2m</div>
+          </div>
+          <div class="check-right">
+            <div class="price">500円 × 1本</div>
+            <span class="badge badge-buy">購入</span>
+          </div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-id="p-stepdrill-buy">
+          <div class="check-box"></div>
+          <div class="check-content">
+            <div class="check-name">ステップドリル（4〜20mm or 4〜32mm）</div>
+            <div class="check-detail">手持ちになければ購入 ／ NVボックス穴あけ用</div>
+          </div>
+          <div class="check-right">
+            <div class="price">1,500円 × 1本</div>
+            <span class="badge badge-buy">手持ちなければ購入</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="total-card">
+        <div class="total-label">概算合計</div>
+        <div class="total-amount">約20,000〜23,000円</div>
+      </div>
+      <div class="note-text">※木材追加購入なしの場合。VP13籠フレームが必要な場合は+500〜1,000円程度</div>
+
+    </div>
+  </div>
+
+  <button class="reset-btn" onclick="resetAll()">チェックをすべてリセット</button>
+
+</main>
+
+<script>
+  const STORAGE_KEY = 'camp-checklist-2026-04-14';
+
+  function loadState() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    } catch(e) {
+      return {};
+    }
+  }
+
+  function saveState(state) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+
+  function updateProgress() {
+    const items = document.querySelectorAll('.check-item');
+    const total = items.length;
+    const done = document.querySelectorAll('.check-item.checked').length;
+    const pct = total > 0 ? Math.round(done / total * 100) : 0;
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.getElementById('progressLabel').textContent = done + ' / ' + total + ' 完了';
+  }
+
+  function toggle(el) {
+    const id = el.dataset.id;
+    const state = loadState();
+    el.classList.toggle('checked');
+    if (el.classList.contains('checked')) {
+      state[id] = true;
+    } else {
+      delete state[id];
+    }
+    saveState(state);
+    updateProgress();
+  }
+
+  function toggleSection(name) {
+    const body = document.getElementById('body-' + name);
+    const toggle = document.getElementById('toggle-' + name);
+    body.classList.toggle('open');
+    toggle.classList.toggle('open');
+  }
+
+  function resetAll() {
+    if (!confirm('チェックをすべてリセットしますか？')) return;
+    localStorage.removeItem(STORAGE_KEY);
+    document.querySelectorAll('.check-item.checked').forEach(el => el.classList.remove('checked'));
+    updateProgress();
+  }
+
+  // 初期状態の復元
+  window.addEventListener('DOMContentLoaded', function() {
+    const state = loadState();
+    Object.keys(state).forEach(function(id) {
+      const el = document.querySelector('[data-id="' + id + '"]');
+      if (el) el.classList.add('checked');
+    });
+    updateProgress();
+  });
+</script>
+
+</body>
+</html>
